@@ -1,0 +1,15 @@
+https://cert-manager.io/docs/tutorials/acme/ingress/#step-0-install-helm-client
+
+install cert manager with helm
+
+deploy cluster-issuer with server pointing to letsencrypt
+
+ingress annotation
+
+cert-manager.io/cluster-issuer: letsencrypt
+
+ingress resource under the rule spec
+tls:
+- hosts:
+  - observability.westeurope.cloudapp.azure.com
+  secretName: cert-key
