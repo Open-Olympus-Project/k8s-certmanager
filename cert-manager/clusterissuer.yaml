@@ -22,7 +22,7 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: letsencrypt-prod-vauly
+  name: letsencrypt-prod-vault
   namespace: nginx-ingress
 spec:
   acme:
