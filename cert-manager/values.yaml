@@ -1,4 +1,7 @@
 issuer:
+
+  email: <test_email>
+ 
   vault: 
     enabled: false
 
