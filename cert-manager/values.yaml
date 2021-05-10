@@ -20,6 +20,10 @@ cert-manager:
     priorityClassName: ""
     rbac:
       create: true
+      # Allow cert-manager to manage Istio VirtualService resources, used for
+      # solving HTTP01 Istio challenges. When set to false, cert-manager will
+      # not support solving ACME HTTP01 challenges using VirtualServices.
+      allowIstioResourceAccess: true
 
     podSecurityPolicy:
       enabled: false
@@ -32,7 +36,22 @@ cert-manager:
       # Override the namespace used to store the ConfigMap for leader election
       namespace: "kube-system"
 
-  installCRDs: true
+      # The duration that non-leader candidates will wait after observing a
+      # leadership renewal until attempting to acquire leadership of a led but
+      # unrenewed leader slot. This is effectively the maximum duration that a
+      # leader can be stopped before it is replaced by another candidate.
+      # leaseDuration: 60s
+
+      # The interval between attempts by the acting master to renew a leadership
+      # slot before it stops leading. This must be less than or equal to the
+      # lease duration.
+      # renewDeadline: 40s
+
+      # The duration the clients should wait between attempting acquisition and
+      # renewal of a leadership.
+      # retryPeriod: 15s
+
+  installCRDs: false
 
   replicaCount: 1
 
@@ -49,7 +68,7 @@ cert-manager:
   image:
     repository: quay.io/jetstack/cert-manager-controller
     # You can manage a registry with
-    # registy: quay.io
+    # registry: quay.io
     # repository: jetstack/cert-manager-controller
 
     # Override the image tag to deploy by setting this variable.
@@ -73,6 +92,8 @@ cert-manager:
     # name: ""
     # Optional additional annotations to add to the controller's ServiceAccount
     # annotations: {}
+    # Automount API credentials for a Service Account.
+    automountServiceAccountToken: true
 
   # Optional additional arguments
   extraArgs: []
@@ -81,6 +102,8 @@ cert-manager:
     # - --cluster-resource-namespace=kube-system
     # When this flag is enabled, secrets will be automatically removed when the certificate resource is deleted
     # - --enable-certificate-owner-ref=true
+    # Use this flag to enabled or disable arbitrary controllers, for example, disable the CertificiateRequests approver
+    # - --controllers=*,-certificaterequests-approver
 
   extraEnv: []
   # - name: SOME_VAR
@@ -159,7 +182,7 @@ cert-manager:
 
   # Use these variables to configure the HTTP_PROXY environment variables
   # http_proxy: "http://proxy:8080"
-  # http_proxy: "http://proxy:8080"
+  # https_proxy: "https://proxy:8080"
   # no_proxy: 127.0.0.1,localhost
 
   # expects input structure as per specification https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.11/#affinity-v1-core
@@ -186,6 +209,7 @@ cert-manager:
 
   webhook:
     replicaCount: 1
+    timeoutSeconds: 10
 
     strategy: {}
       # type: RollingUpdate
@@ -246,10 +270,13 @@ cert-manager:
 
     tolerations: []
 
+    # Optional additional labels to add to the Webhook Pods
+    podLabels: {}
+
     image:
       repository: quay.io/jetstack/cert-manager-webhook
       # You can manage a registry with
-      # registy: quay.io
+      # registry: quay.io
       # repository: jetstack/cert-manager-webhook
 
       # Override the image tag to deploy by setting this variable.
@@ -269,6 +296,8 @@ cert-manager:
       # name: ""
       # Optional additional annotations to add to the controller's ServiceAccount
       # annotations: {}
+      # Automount API credentials for a Service Account.
+      automountServiceAccountToken: true
 
     # The port that the webhook should listen on for requests.
     # In GKE private clusters, by default kubernetes apiservers are allowed to
@@ -287,6 +316,17 @@ cert-manager:
     # network, `webhook.securePort` should be changed to an available port if
     # running in hostNetwork mode.
     hostNetwork: false
+
+    # Specifies how the service should be handled. Useful if you want to expose the
+    # webhook to outside of the cluster. In some cases, the control plane cannot
+    # reach internal services.
+    serviceType: ClusterIP
+    # loadBalancerIP:
+
+    # Overrides the mutating webhook and validating webhook so they reach the webhook
+    # service using the `url` field instead of a service.
+    url: {}
+      # host:
 
   cainjector:
     enabled: true
@@ -330,10 +370,13 @@ cert-manager:
 
     tolerations: []
 
+    # Optional additional labels to add to the CA Injector Pods
+    podLabels: {}
+
     image:
       repository: quay.io/jetstack/cert-manager-cainjector
       # You can manage a registry with
-      # registy: quay.io
+      # registry: quay.io
       # repository: jetstack/cert-manager-cainjector
 
       # Override the image tag to deploy by setting this variable.
@@ -353,3 +396,5 @@ cert-manager:
       # name: ""
       # Optional additional annotations to add to the controller's ServiceAccount
       # annotations: {}
+      # Automount API credentials for a Service Account.
+      automountServiceAccountToken: true
