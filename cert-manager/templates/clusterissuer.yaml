@@ -14,9 +14,7 @@ spec:
       name: letsencrypt
     # Add a single challenge solver, HTTP01 using nginx
     solvers:
-    - http01:
-        ingress:
-          class: nginx
+{{ .Values.issuer.solvers | toYaml | indent 4}}
 {{- if .Values.issuer.vault.enabled}}
 ---
 apiVersion: cert-manager.io/v1

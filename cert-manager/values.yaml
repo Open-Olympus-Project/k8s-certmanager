@@ -1,6 +1,11 @@
 issuer:
 
   email: <test_email>
+
+  solvers:
+  - http01:
+      ingress:
+        class: nginx
  
   vault: 
     enabled: false
