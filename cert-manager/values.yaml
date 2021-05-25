@@ -1,4 +1,5 @@
 issuer:
+  enabled: true
 
   email: <test_email>
 

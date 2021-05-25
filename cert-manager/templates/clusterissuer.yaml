@@ -1,3 +1,4 @@
+{{ if .Values.issuer.enabled }}
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
@@ -17,6 +18,7 @@ spec:
     # Add a single challenge solver, HTTP01 using nginx
     solvers:
 {{ .Values.issuer.solvers | toYaml | indent 4}}
+{{ end }}
 {{- if .Values.issuer.vault.enabled}}
 ---
 apiVersion: cert-manager.io/v1
