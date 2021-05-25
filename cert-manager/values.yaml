@@ -1,13 +1,3 @@
-issuer:
-  enabled: true
-
-  email: <test_email>
-
-  solvers:
-  - http01:
-      ingress:
-        class: traefik
-
 cert-manager:
   # Default values for cert-manager.
   # This is a YAML-formatted file.
