@@ -7,9 +7,6 @@ issuer:
   - http01:
       ingress:
         class: traefik
- 
-  vault: 
-    enabled: false
 
 cert-manager:
   # Default values for cert-manager.
