@@ -5,7 +5,7 @@ issuer:
   solvers:
   - http01:
       ingress:
-        class: ingress-traefik
+        class: traefik
  
   vault: 
     enabled: false
